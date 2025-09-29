@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ecological Succession</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        .slide-container {
+            width: 1000px;
+            height: 600px;
+            background-color: white;
+            border: 1px solid #ccc;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            display: flex;
+            position: relative;
+            padding: 20px;
+        }
+        .main-columns {
+            display: flex;
+            width: 70%;
+            height: 100%;
+            border-right: 2px solid #ddd;
+        }
+        .column-header {
+            font-weight: bold;
+            text-align: center;
+            padding: 10px;
+            border-bottom: 2px solid #ddd;
+            color: #333;
+        }
+        .column-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .column {
+            flex: 1;
+            border-left: 1px solid #ddd;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            transition: background-color 0.3s;
+        }
+        .column:first-child {
+            border-left: none;
+        }
+        .source-area {
+            width: 30%;
+            height: 100%;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            position: relative;
+            overflow-y: auto;
+        }
+        .draggable-item {
+            background-color: #e6e6e6;
+            padding: 10px;
+            border: 1px solid #b3b3b3;
+            border-radius: 5px;
+            cursor: grab;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            touch-action: none; /* Disable default touch actions like scrolling */
+        }
+        .draggable-item.correct {
+            background-color: #d4edda; /* Light green */
+            border-color: #28a745; /* Darker green */
+        }
+        .draggable-item.incorrect {
+            background-color: #f8d7da; /* Light red */
+            border-color: #dc3545; /* Darker red */
+        }
+        h3, p {
+            text-align: center;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        .controls {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        .controls button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: white;
+            transition: background-color 0.3s;
+        }
+        .controls button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+    <h3>Ecological Succession</h3>
+    <p><b>Instructions:</b> Drag each text box from the right into the correct column below.</p>
+    <div class="controls">
+        <button onclick="resetItems()">Reset</button>
+        <button onclick="undoLastMove()">Undo</button>
+    </div>
+<br>
+    <div class="slide-container">
+        <div class="main-columns">
+            <div class="column-container">
+                <div class="column-header">Primary</div>
+                <div class="column" id="Primary" ondragover="allowDrop(event)" ondrop="drop(event)" ontouchmove="touchMove(event)" ontouchend="touchEnd(event)"></div>
+            </div>
+            <div class="column-container">
+                <div class="column-header">Both</div>
+                <div class="column" id="Both" ondragover="allowDrop(event)" ondrop="drop(event)" ontouchmove="touchMove(event)" ontouchend="touchEnd(event)"></div>
+            </div>
+            <div class="column-container">
+                <div class="column-header">Secondary</div>
+                <div class="column" id="Secondary" ondragover="allowDrop(event)" ondrop="drop(event)" ontouchmove="touchMove(event)" ontouchend="touchEnd(event)"></div>
+            </div>
+        </div>
+        <div class="source-area" id="source-area">
+            <div class="draggable-item" id="item1" draggable="true" ondragstart="drag(event)" ontouchstart="touchStart(event)">Barren rock</div>
+            <div class="draggable-item" id="item2" draggable="true" ondragstart="drag(event)" ontouchstart="touchStart(event)">Soil is initially present</div>
+            <div class="draggable-item" id="item3" draggable="true" ondragstart="drag(event)" ontouchstart="touchStart(event)">Occurs after glacier retreat</div>
+            <div class="draggable-item" id="item4" draggable="true" ondragstart="drag(event)" ontouchstart="touchStart(event)">Plant pioneer species arrive by wind</div>
+            <div class="draggable-item" id="item5" draggable="true" ondragstart="drag(event)" ontouchstart="touchStart(event)">Occurs after a volcanic eruption</div>
+            <div class="draggable-item" id="item6" draggable="true" ondragstart="drag(event)" ontouchstart="touchStart(event)">Early plant community of fast-growing grasses and flowering plants</div>
+            <div class="draggable-item" id="item7" draggable="true" ondragstart="drag(event)" ontouchstart="touchStart(event)">No soil is present initially</div>
+            <div class="draggable-item" id="item8" draggable="true" ondragstart="drag(event)" ontouchstart="touchStart(event)">Intermediate community of fast growing trees like pine</div>
+            <div class="draggable-item" id="item9" draggable="true" ondragstart="drag(event)" ontouchstart="touchStart(event)">Moss and lichen are first pioneer species</div>
+            <div class="draggable-item" id="item10" draggable="true" ondragstart="drag(event)" ontouchstart="touchStart(event)">Climax community of hardwood</div>
+            <div class="draggable-item" id="item11" draggable="true" ondragstart="drag(event)" ontouchstart="touchStart(event)">Begins after an established community is destroyed</div>
+            <div class="draggable-item" id="item12" draggable="true" ondragstart="drag(event)" ontouchstart="touchStart(event)">Occurs after a forest fire</div>
+        </div>
+    </div>
+
+    <script>
+        const correctAnswers = {
+            "item1": "Primary", // Barren rock
+            "item2": "Secondary", // Soil is initially present
+            "item3": "Primary", // Occurs after glacier retreat
+            "item4": "Both", // Plant pioneer species arrive by wind
+            "item5": "Primary", // Occurs after a volcanic eruption
+            "item6": "Both", // Early plant community of fast-growing grasses and flowering plants
+            "item7": "Primary", // No soil is present initially
+            "item8": "Both", // Intermediate community of fast growing trees like pine
+            "item9": "Primary", // Moss and lichen are first pioneer species
+            "item10": "Both", // Climax community of hardwood
+            "item11": "Secondary", // Begins after an established community is destroyed
+            "item12": "Secondary" // Occurs after a forest fire
+        };
+
+        const initialPositions = {}; // To store the initial parent of each item for reset
+        const moveHistory = []; // To store moves for undo functionality
+
+        let draggedItem = null; // For touch events
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.draggable-item').forEach(item => {
+                initialPositions[item.id] = item.parentElement.id;
+            });
+        });
+
+        // --- Drag and Drop (Mouse) Functions ---
+        function allowDrop(event) {
+            event.preventDefault();
+            event.currentTarget.style.backgroundColor = '#eef';
+        }
+
+        function drag(event) {
+            event.dataTransfer.setData("text", event.target.id);
+            event.target.classList.remove('correct', 'incorrect'); // Clear previous feedback
+        }
+
+        function drop(event) {
+            event.preventDefault();
+            const data = event.dataTransfer.getData("text");
+            const element = document.getElementById(data);
+            const targetColumnId = event.currentTarget.id;
+            
+            recordMove(element.id, element.parentElement.id, targetColumnId); // Record the move
+            event.currentTarget.appendChild(element);
+            checkCorrectness(element, targetColumnId);
+            event.currentTarget.style.backgroundColor = 'white';
+        }
+
+        // --- Touch Screen Functions ---
+        function touchStart(event) {
+            event.preventDefault(); // Prevent scrolling and default browser actions
+            draggedItem = event.target;
+            draggedItem.classList.remove('correct', 'incorrect'); // Clear previous feedback
+            // Create a clone for visual feedback during drag
+            const clone = draggedItem.cloneNode(true);
+            clone.id = 'dragging-clone';
+            clone.style.position = 'absolute';
+            clone.style.zIndex = '1000';
+            clone.style.width = draggedItem.offsetWidth + 'px';
+            clone.style.height = draggedItem.offsetHeight + 'px';
+            clone.style.pointerEvents = 'none'; // Ensure it doesn't interfere with drop targets
+            document.body.appendChild(clone);
+            
+            // Initial position of the clone
+            const touch = event.touches[0];
+            clone.style.left = touch.clientX - clone.offsetWidth / 2 + 'px';
+            clone.style.top = touch.clientY - clone.offsetHeight / 2 + 'px';
+            draggedItem.style.opacity = '0.5'; // Make original item semi-transparent
+        }
+
+        function touchMove(event) {
+            event.preventDefault(); // Prevent scrolling
+            if (draggedItem && document.getElementById('dragging-clone')) {
+                const touch = event.touches[0];
+                const clone = document.getElementById('dragging-clone');
+                clone.style.left = touch.clientX - clone.offsetWidth / 2 + 'px';
+                clone.style.top = touch.clientY - clone.offsetHeight / 2 + 'px';
+
+                // Highlight potential drop targets
+                const targetElement = document.elementFromPoint(touch.clientX, touch.clientY);
+                document.querySelectorAll('.column').forEach(col => {
+                    col.style.backgroundColor = 'white';
+                });
+                if (targetElement && targetElement.classList.contains('column')) {
+                    targetElement.style.backgroundColor = '#eef';
+                }
+            }
+        }
+
+        function touchEnd(event) {
+            if (!draggedItem) return;
+
+            const clone = document.getElementById('dragging-clone');
+            if (clone) {
+                clone.remove();
+            }
+            draggedItem.style.opacity = '1'; // Restore opacity
+
+            const touch = event.changedTouches[0];
+            const targetElement = document.elementFromPoint(touch.clientX, touch.clientY);
+
+            if (targetElement && targetElement.classList.contains('column')) {
+                const targetColumnId = targetElement.id;
+                recordMove(draggedItem.id, draggedItem.parentElement.id, targetColumnId); // Record the move
+                targetElement.appendChild(draggedItem);
+                checkCorrectness(draggedItem, targetColumnId);
+            } else if (targetElement && targetElement.classList.contains('source-area')) {
+                // Allow dropping back to the source area
+                const sourceArea = document.getElementById('source-area');
+                recordMove(draggedItem.id, draggedItem.parentElement.id, sourceArea.id); // Record the move
+                sourceArea.appendChild(draggedItem);
+                draggedItem.classList.remove('correct', 'incorrect'); // Remove feedback if returned to source
+            }
+            draggedItem = null;
+            document.querySelectorAll('.column').forEach(col => {
+                col.style.backgroundColor = 'white'; // Clear column highlight
+            });
+        }
+
+        // --- General Functions ---
+        function checkCorrectness(element, currentColumnId) {
+            const itemId = element.id;
+            const correctAnswer = correctAnswers[itemId];
+            if (currentColumnId === correctAnswer) {
+                element.classList.remove('incorrect');
+                element.classList.add('correct');
+            } else if (currentColumnId === 'source-area') {
+                element.classList.remove('correct', 'incorrect'); // No feedback in source area
+            }
+            else {
+                element.classList.remove('correct');
+                element.classList.add('incorrect');
+            }
+        }
+
+        function recordMove(itemId, oldParentId, newParentId) {
+            moveHistory.push({ itemId, oldParentId, newParentId });
+        }
+
+        function undoLastMove() {
+            if (moveHistory.length === 0) return;
+
+            const lastMove = moveHistory.pop();
+            const itemToMove = document.getElementById(lastMove.itemId);
+            const oldParent = document.getElementById(lastMove.oldParentId);
+
+            if (itemToMove && oldParent) {
+                oldParent.appendChild(itemToMove);
+                // Re-check correctness based on the previous parent, or remove feedback if going to source
+                if (lastMove.oldParentId === 'source-area') {
+                    itemToMove.classList.remove('correct', 'incorrect');
+                } else {
+                    checkCorrectness(itemToMove, lastMove.oldParentId);
+                }
+            }
+        }
+
+        function resetItems() {
+            moveHistory.length = 0; // Clear undo history
+            const sourceArea = document.getElementById('source-area');
+            document.querySelectorAll('.draggable-item').forEach(item => {
+                sourceArea.appendChild(item);
+                item.classList.remove('correct', 'incorrect');
+            });
+            document.querySelectorAll('.column').forEach(col => {
+                col.style.backgroundColor = 'white'; // Clear column highlight
+            });
+        }
+
+        // Event listener to clear highlight on dragleave for mouse
+        document.querySelectorAll('.column').forEach(column => {
+            column.addEventListener('dragleave', (e) => {
+                e.currentTarget.style.backgroundColor = 'white';
+            });
+        });
+    </script>
+</body>
+</html>
